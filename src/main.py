@@ -46,11 +46,10 @@ def get_homography(ref, next):
     return H
 
 def blend_image_pair(img1,img2,num_frames=30):
-    # return 10 images
+    # return 30 images
     frames = []
     for t in np.linspace(0,1,num_frames):
         f = cv.addWeighted(img1, 1 - t, img2, t, 0)
-        # f = np.clip(f,0,255).astype(np.uint8)
         frames.append(f)
     return frames
 
@@ -83,7 +82,6 @@ def crop_all(imgs, crop=None):
     for img in imgs:
         img_crop = img[y1:y2, x1:x2]
         imgs_crop.append(img_crop)
-        show_image(img_crop)
     return imgs_crop
 
 
@@ -99,6 +97,8 @@ def run(kps=None, crop=None):
         img_w = warp_inpaint(imgs[i], imgs[0], H)
         imgs_w.append(img_w)
     imgs_final = crop_all(imgs_w, crop)
+    for i in range(n):
+        cv.imwrite(f'data/processed/{i+1}crop.jpg',imgs_final[i])
 
     video_frames = []
     for i in range(1,n):
